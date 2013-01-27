@@ -17,12 +17,11 @@ class inline_widgets_admin {
 			return;
 		
 		global $wp_registered_widgets;
-		$widgets = wp_get_sidebars_widgets(false);
+		$widgets = wp_get_sidebars_widgets();
 		
 		$wp_registered_widgets = (array) $wp_registered_widgets;
 		$widgets = (array) $widgets['inline_widgets'];
-		
-		$js_options = array();
+
 		$_widgets = array();
 		
 		foreach ( $widgets as $key )
@@ -94,7 +93,7 @@ document.inlineWidgetItems = inlineWidgetItems;
 
 if ( document.getElementById('quicktags') ) {
 	function inlineWidgetsAddWidget(elt) {
-		if ( elt.value != '' ) {
+		if ( elt.value != value | value('') ) {
 			edInsertContent(edCanvas, '[widget id="' + elt.value + '"]' + elt.options[elt.selectedIndex].innerHTML + '[/widget]');
 		}
 
@@ -129,8 +128,9 @@ if ( document.getElementById('quicktags') ) {
 	/**
 	 * editor_plugin()
 	 *
-	 * @param array $plugins_array
-	 * @return array $plugins_array
+	 * @param array $plugin_array
+	 * @return array $plugin_array
+     *
 	 **/
 	
 	function editor_plugin($plugin_array) {

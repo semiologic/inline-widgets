@@ -1,5 +1,5 @@
 === Inline Widgets ===
-Contributors: Denis-de-Bernardy
+Contributors: Denis-de-Bernardy & Mike Koepke
 Donate link: http://www.semiologic.com/partners/
 Tags: semiologic
 Requires at least: 2.8
@@ -52,6 +52,11 @@ The [Semiologic forum](http://forum.semiologic.com) is the best place to report 
 
 
 == Change Log ==
+
+= 2.1 =
+
+- Resolved unknown index warnings
+- WP 3.5 compat
 
 = 2.0.4 =
 

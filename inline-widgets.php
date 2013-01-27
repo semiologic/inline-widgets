@@ -3,8 +3,8 @@
 Plugin Name: Inline Widgets
 Plugin URI: http://www.semiologic.com/software/inline-widgets/
 Description: Creates a special sidebar that lets you insert arbitrary widgets in posts and pages. Configure these inline widgets under <a href="widgets.php">Appearance / Widgets</a>.
-Version: 2.0.4
-Author: Denis de Bernardy
+Version: 2.1
+Author: Denis de Bernardy & Mike Koepke
 Author URI: http://www.getsemiologic.com
 Text Domain: inline-widgets
 Domain Path: /lang
@@ -57,6 +57,7 @@ class inline_widgets {
 	 *
 	 * @param array $sidebars_widgets
 	 * @return array $sidebars_widgets
+     *
 	 **/
 
 	function sidebars_widgets($sidebars_widgets) {
@@ -79,14 +80,16 @@ class inline_widgets {
 		$registered_sidebars = array_keys($wp_registered_sidebars);
 		$registered_sidebars = array_diff($registered_sidebars, array('wp_inactive_widgets'));
 		foreach ( $registered_sidebars as $sidebar )
-			$sidebars_widgets[$sidebar] = (array) $sidebars_widgets[$sidebar];
+            if (isset ($sidebars_widgets[$sidebar]))
+			    $sidebars_widgets[$sidebar] = (array) $sidebars_widgets[$sidebar];
 		$sidebars_widgets['wp_inactive_widgets'] = isset($sidebars_widgets['wp_inactive_widgets']) 
 			? (array) $sidebars_widgets['wp_inactive_widgets']
 			: array();
 		
 		foreach ( $default_widgets as $panel => $widgets ) {
 			if ( empty($sidebars_widgets[$panel]) )
-				$sidebars_widgets[$panel] = (array) $sidebars_widgets[$panel];
+                if (isset($sidebars_widgets[$panel]))
+				    $sidebars_widgets[$panel] = (array) $sidebars_widgets[$panel];
 			else
 				continue;
 			
@@ -245,7 +248,8 @@ class inline_widgets {
 	/**
 	 * upgrade_callback()
 	 *
-	 * @return void
+	 * @param array $match
+     * @return string
 	 **/
 
 	function upgrade_callback($match) {
