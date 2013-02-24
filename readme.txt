@@ -53,6 +53,10 @@ The [Semiologic forum](http://forum.semiologic.com) is the best place to report 
 
 == Change Log ==
 
+= 2.1.2 =
+
+- Resolved unknown index warnings
+
 = 2.1.1 =
 
 - Fixed null array call warning

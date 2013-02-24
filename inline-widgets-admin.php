@@ -20,7 +20,7 @@ class inline_widgets_admin {
 		$widgets = wp_get_sidebars_widgets();
 		
 		$wp_registered_widgets = (array) $wp_registered_widgets;
-		$widgets = (array) $widgets['inline_widgets'];
+		$widgets = (isset($widgets['inline_widgets'])) ? (array) $widgets['inline_widgets'] : array();
 
 		$_widgets = array();
 		
