@@ -3,7 +3,7 @@
 Plugin Name: Inline Widgets
 Plugin URI: http://www.semiologic.com/software/inline-widgets/
 Description: Creates a special sidebar that lets you insert arbitrary widgets in posts and pages. Configure these inline widgets under <a href="widgets.php">Appearance / Widgets</a>.
-Version: 2.1.2
+Version: 2.2
 Author: Denis de Bernardy & Mike Koepke
 Author URI: http://www.getsemiologic.com
 Text Domain: inline-widgets
@@ -30,7 +30,23 @@ load_plugin_textdomain('inline-widgets', false, dirname(plugin_basename(__FILE__
  **/
 
 class inline_widgets {
-	/**
+    /**
+     * inline_widgets()
+     *
+     */
+    function inline_widgets() {
+        add_action('init', array($this, 'panels'), -100);
+        add_shortcode('widget', array($this, 'shortcode'));
+
+        if ( get_option('inline_widgets_version') === false && !defined('DOING_CRON') ) {
+        	if ( is_admin() )
+        		add_action('init', array($this, 'upgrade'), 3000);
+        	else
+        		add_filter('the_content', array($this, 'upgrade_filter'), 0);
+        }
+    } #inline_widgets()
+
+    /**
 	 * panels()
 	 *
 	 * @return void
@@ -48,7 +64,7 @@ class inline_widgets {
 				)
 			);
 		
-		add_filter('sidebars_widgets', array('inline_widgets', 'sidebars_widgets'));
+		add_filter('sidebars_widgets', array($this, 'sidebars_widgets'));
 	} # panels()
 	
 	
@@ -243,7 +259,7 @@ class inline_widgets {
 		return preg_replace_callback("/
 			\[widget:\s*(.+?)\s*\]
 			/ix",
-			array('inline_widgets', 'upgrade_callback'),
+			array($this, 'upgrade_callback'),
 			$text);
 	} # upgrade_filter()
 	
@@ -279,14 +295,5 @@ function inline_widgets_admin() {
 foreach ( array('page-new.php', 'page.php', 'post-new.php', 'post.php') as $hook )
 	add_action("load-$hook", 'inline_widgets_admin');
 
-
-add_action('init', array('inline_widgets', 'panels'), -100);
-add_shortcode('widget', array('inline_widgets', 'shortcode'));
-
-if ( get_option('inline_widgets_version') === false && !defined('DOING_CRON') ) {
-	if ( is_admin() )
-		add_action('init', array('inline_widgets', 'upgrade'), 3000);
-	else
-		add_filter('the_content', array('inline_widgets', 'upgrade_filter'), 0);
-}
+$inline_widgets =  new inline_widgets();
 ?>

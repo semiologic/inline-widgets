@@ -6,7 +6,16 @@
  **/
 
 class inline_widgets_admin {
-	/**
+    /**
+     * inline_widgets_admin()
+     */
+    function inline_widgets_admin() {
+        add_filter('admin_footer', array($this, 'footer_js'), 5);
+        add_filter('mce_external_plugins', array($this, 'editor_plugin'));
+        add_filter('mce_buttons_4', array($this, 'editor_button'), 20);
+    } #inline_widgets_admin
+
+    /**
 	 * footer_js()
 	 *
 	 * @package default
@@ -164,7 +173,5 @@ if ( document.getElementById('quicktags') ) {
 	} # editor_button()
 } # inline_widgets_admin
 
-add_filter('admin_footer', array('inline_widgets_admin', 'footer_js'), 5);
-add_filter('mce_external_plugins', array('inline_widgets_admin', 'editor_plugin'));
-add_filter('mce_buttons_4', array('inline_widgets_admin', 'editor_button'), 20);
+$inline_widgets_admin = new inline_widgets_admin();
 ?>
