@@ -9,7 +9,7 @@ class inline_widgets_admin {
     /**
      * inline_widgets_admin()
      */
-    function inline_widgets_admin() {
+	public function __construct() {
         add_filter('admin_footer', array($this, 'footer_js'), 5);
         add_filter('mce_external_plugins', array($this, 'editor_plugin'));
         add_filter('mce_buttons_4', array($this, 'editor_button'), 20);
@@ -174,4 +174,3 @@ if ( document.getElementById('quicktags') ) {
 } # inline_widgets_admin
 
 $inline_widgets_admin = new inline_widgets_admin();
-?>
