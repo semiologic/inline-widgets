@@ -1,4 +1,6 @@
 <?php
+
+
 /**
  * inline_widgets_admin
  *
@@ -6,14 +8,68 @@
  **/
 
 class inline_widgets_admin {
-    /**
-     * inline_widgets_admin()
-     */
+	/**
+	 * Plugin instance.
+	 *
+	 * @see get_instance()
+	 * @type object
+	 */
+	protected static $instance = NULL;
+
+	/**
+	 * URL to this plugin's directory.
+	 *
+	 * @type string
+	 */
+	public $plugin_url = '';
+
+	/**
+	 * Path to this plugin's directory.
+	 *
+	 * @type string
+	 */
+	public $plugin_path = '';
+
+	/**
+	 * Access this plugin’s working instance
+	 *
+	 * @wp-hook plugins_loaded
+	 * @return  object of this class
+	 */
+	public static function get_instance()
+	{
+		NULL === self::$instance and self::$instance = new self;
+
+		return self::$instance;
+	}
+
+
+	/**
+	 * Constructor.
+	 *
+	 *
+	 */
 	public function __construct() {
-        add_filter('admin_footer', array($this, 'footer_js'), 5);
+		$this->plugin_url    = plugins_url( '/', __FILE__ );
+		$this->plugin_path   = plugin_dir_path( __FILE__ );
+
+		$this->init();
+    } #inline_widgets_admin
+
+	/**
+	 * init()
+	 *
+	 * @return void
+	 **/
+
+	function init() {
+
+
+		// more stuff: register actions and filters
+		add_filter('admin_footer', array($this, 'footer_js'), 5);
         add_filter('mce_external_plugins', array($this, 'editor_plugin'));
         add_filter('mce_buttons_4', array($this, 'editor_button'), 20);
-    } #inline_widgets_admin
+	}
 
     /**
 	 * footer_js()
@@ -173,4 +229,4 @@ if ( document.getElementById('quicktags') ) {
 	} # editor_button()
 } # inline_widgets_admin
 
-$inline_widgets_admin = new inline_widgets_admin();
+$inline_widgets_admin = inline_widgets_admin::get_instance();

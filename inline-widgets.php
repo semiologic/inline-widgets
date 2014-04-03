@@ -3,7 +3,7 @@
 Plugin Name: Inline Widgets
 Plugin URI: http://www.semiologic.com/software/inline-widgets/
 Description: Creates a special sidebar that lets you insert arbitrary widgets in posts and pages. Configure these inline widgets under <a href="widgets.php">Appearance / Widgets</a>.
-Version: 2.2.1
+Version: 2.3 dev
 Author: Denis de Bernardy & Mike Koepke
 Author URI: http://www.getsemiologic.com
 Text Domain: inline-widgets
@@ -19,9 +19,6 @@ This software is copyright Denis de Bernardy & Mike Koepke, and is distributed u
 **/
 
 
-load_plugin_textdomain('inline-widgets', false, dirname(plugin_basename(__FILE__)) . '/lang');
-
-
 /**
  * inline_widgets
  *
@@ -29,21 +26,106 @@ load_plugin_textdomain('inline-widgets', false, dirname(plugin_basename(__FILE__
  **/
 
 class inline_widgets {
-    /**
-     * inline_widgets()
-     *
-     */
+	/**
+	 * Plugin instance.
+	 *
+	 * @see get_instance()
+	 * @type object
+	 */
+	protected static $instance = NULL;
+
+	/**
+	 * URL to this plugin's directory.
+	 *
+	 * @type string
+	 */
+	public $plugin_url = '';
+
+	/**
+	 * Path to this plugin's directory.
+	 *
+	 * @type string
+	 */
+	public $plugin_path = '';
+
+	/**
+	 * Access this plugin’s working instance
+	 *
+	 * @wp-hook plugins_loaded
+	 * @return  object of this class
+	 */
+	public static function get_instance()
+	{
+		NULL === self::$instance and self::$instance = new self;
+
+		return self::$instance;
+	}
+
+	/**
+	 * Loads translation file.
+	 *
+	 * Accessible to other classes to load different language files (admin and
+	 * front-end for example).
+	 *
+	 * @wp-hook init
+	 * @param   string $domain
+	 * @return  void
+	 */
+	public function load_language( $domain )
+	{
+		load_plugin_textdomain(
+			$domain,
+			FALSE,
+			$this->plugin_path . 'lang'
+		);
+	}
+
+	/**
+	 * Constructor.
+	 *
+	 *
+	 */
 	public function __construct() {
-        add_action('init', array($this, 'panels'), -100);
+		$this->plugin_url    = plugins_url( '/', __FILE__ );
+		$this->plugin_path   = plugin_dir_path( __FILE__ );
+		$this->load_language( 'inline-widgets' );
+
+		add_action( 'plugins_loaded', array ( $this, 'init' ) );
+    } #inline_widgets()
+
+	/**
+	 * init()
+	 *
+	 * @return void
+	 **/
+
+	function init() {
+		if ( get_option('inline_widgets_version') === false && !defined('DOING_CRON') ) {
+			if ( is_admin() ) {
+				add_action('init', array($this, 'upgrade'), 3000);
+			}
+			else
+				add_filter('the_content', array($this, 'upgrade_filter'), 0);
+		}
+
+		// more stuff: register actions and filters
+		add_action('init', array($this, 'panels'), -100);
         add_shortcode('widget', array($this, 'shortcode'));
 
-        if ( get_option('inline_widgets_version') === false && !defined('DOING_CRON') ) {
-        	if ( is_admin() )
-        		add_action('init', array($this, 'upgrade'), 3000);
-        	else
-        		add_filter('the_content', array($this, 'upgrade_filter'), 0);
-        }
-    } #inline_widgets()
+		if ( is_admin() ) {
+		    foreach ( array('page-new.php', 'page.php', 'post-new.php', 'post.php') as $hook )
+			    add_action("load-$hook", array($this, 'inline_widgets_admin'));
+		}
+	}
+
+	/**
+	* inline_widgets_admin()
+	*
+	* @return void
+	**/
+	function inline_widgets_admin() {
+ 	    include_once $this->plugin_path . '/inline-widgets-admin.php';
+    }
 
     /**
 	 * panels()
@@ -286,12 +368,4 @@ class inline_widgets {
 	} # upgrade_callback()
 } # inline_widgets
 
-
-function inline_widgets_admin() {
-	include_once dirname(__FILE__) . '/inline-widgets-admin.php';
-}
-
-foreach ( array('page-new.php', 'page.php', 'post-new.php', 'post.php') as $hook )
-	add_action("load-$hook", 'inline_widgets_admin');
-
-$inline_widgets =  new inline_widgets();
+$inline_widgets = inline_widgets::get_instance();
