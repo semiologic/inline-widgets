@@ -30,6 +30,8 @@ class inline_widgets_admin {
 	 */
 	public $plugin_path = '';
 
+	protected $tinymce4 = false;
+
 	/**
 	 * Access this plugin’s working instance
 	 *
@@ -53,6 +55,10 @@ class inline_widgets_admin {
 		$this->plugin_url    = plugins_url( '/', __FILE__ );
 		$this->plugin_path   = plugin_dir_path( __FILE__ );
 
+		global $wp_version;
+		if ( version_compare( $wp_version, '3.9', '>=' ) )
+			$this->tinymce4 = true;
+
 		$this->init();
     } #inline_widgets_admin
 
@@ -61,15 +67,26 @@ class inline_widgets_admin {
 	 *
 	 * @return void
 	 **/
-
 	function init() {
-
-
 		// more stuff: register actions and filters
 		add_filter('admin_footer', array($this, 'footer_js'), 5);
         add_filter('mce_external_plugins', array($this, 'editor_plugin'));
         add_filter('mce_buttons_4', array($this, 'editor_button'), 20);
+		add_filter('tiny_mce_before_init', array($this, 'editor_init'), 20);
+
+		add_action('admin_enqueue_scripts', array($this, 'admin_scripts'));
 	}
+
+
+	/**
+	 * admin_scripts()
+	 *
+	 * @return void
+	 **/
+
+	function admin_scripts() {
+//		wp_enqueue_script('inline_widgets', plugins_url( '/js/admin.js', __FILE__), array('jquery'), '20140503', false);
+	} # admin_scripts()
 
     /**
 	 * footer_js()
@@ -126,7 +143,12 @@ class inline_widgets_admin {
 			
 			$widgets[$id] = $label;
 		}
-		
+
+		if ( $this->tinymce4 )
+			$listitem_text = "text";
+		else
+			$listitem_text = "label";
+
 		$i = 0;
 		$js_options = array();
 		
@@ -135,7 +157,7 @@ class inline_widgets_admin {
 				. $i++
 				. "']"
 				. "= {"
-				. "label: '" . str_replace(
+				. $listitem_text . ": '" . str_replace(
 						array("\\", "'"),
 						array("\\\\", "\\'"),
 						$label
@@ -155,36 +177,6 @@ var inlineWidgetItems = new Array();
 <?php echo implode("\n", $js_options) . "\n"; ?>
 document.inlineWidgetItems = inlineWidgetItems;
 //alert(document.inlineWidgetItems);
-
-if ( document.getElementById('quicktags') ) {
-	function inlineWidgetsAddWidget(elt) {
-		if ( elt.value != value | value('') ) {
-			edInsertContent(edCanvas, '[widget id="' + elt.value + '"]' + elt.options[elt.selectedIndex].innerHTML + '[/widget]');
-		}
-
-		elt.selectedIndex = 0;
-	} // inlineWidgetsAddWidget()
-
-	var inlineWidgetsQTButton = '<select class="ed_button" style="width: 100px;" onchange="return inlineWidgetsAddWidget(this);">';
-
-	inlineWidgetsQTButton += '<option value="" selected="selected"><?php echo __('Widget', 'inline-widgets'); ?><\/option>';
-
-	var i;
-	var label;
-	var value;
-
-	for ( i = 0; i < inlineWidgetItems.length; i++ ) {
-		label = new String(inlineWidgetItems[i].label);
-		value = new String(inlineWidgetItems[i].value);
-		value = value.replace("\"", "&quot;");
-	
-		inlineWidgetsQTButton += '<option value="' + value + '">' + label + '<\/option>';
-	}
-
-	inlineWidgetsQTButton += '<\/select>';
-
-	document.getElementById('ed_toolbar').innerHTML += inlineWidgetsQTButton;
-} // end if
 //--><!]]></script>
 <?php
 	} # footer_js()
@@ -200,7 +192,10 @@ if ( document.getElementById('quicktags') ) {
 	
 	function editor_plugin($plugin_array) {
 		if ( get_user_option('rich_editing') == 'true') {
-			$plugin = plugin_dir_url(__FILE__) . 'tinymce/editor_plugin.js';
+			if ($this->tinymce4 )
+				$plugin = plugin_dir_url(__FILE__) . 'tinymce/plugin.js';
+			else
+				$plugin = plugin_dir_url(__FILE__) . 'tinymce/editor_plugin.js';
 				
 			$plugin_array['inline_widgets'] = $plugin;
 		}
@@ -227,6 +222,31 @@ if ( document.getElementById('quicktags') ) {
 		
 		return $buttons;
 	} # editor_button()
+
+
+	/**
+	 * editor_init()
+	 *
+	 * @param array  $mceInit   An array with TinyMCE config.
+	 **/
+
+	function editor_init($mceInit) {
+
+		$toolbar4 = explode( ',', $mceInit['toolbar4']);
+		if ( count ($toolbar4 ) <= 1) {
+			if ( $toolbar4[0] == 'inline_widgets') {
+				if ( !empty($mceInit['toolbar3'] )) {
+					$mceInit['toolbar3'] .= ',inline_widgets';
+				}
+				else {
+					$mceInit['toolbar2'] .= ',inline_widgets';
+				}
+				$mceInit['toolbar4'] = '';
+			}
+		}
+
+		return $mceInit;
+	} # editor_init()
 } # inline_widgets_admin
 
 $inline_widgets_admin = inline_widgets_admin::get_instance();

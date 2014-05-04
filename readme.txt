@@ -3,7 +3,7 @@ Contributors: Denis-de-Bernardy & Mike_Koepke
 Donate link: http://www.semiologic.com/partners/
 Tags: semiologic
 Requires at least: 2.8
-Tested up to: 3.8
+Tested up to: 3.9
 Stable tag: trunk
 
 Lets you insert any widget in the contents of your posts and pages.
@@ -55,7 +55,9 @@ The [Semiologic forum](http://forum.semiologic.com) is the best place to report 
 
 = 2.3 =
 
+- Changes for WP 3.9/TinyMCE compatibility
 - Code refactoring
+- Disable quicktags functionality
 
 = 2.2.1 =
 
