@@ -55,8 +55,8 @@ class inline_widgets_admin {
 		$this->plugin_url    = plugins_url( '/', __FILE__ );
 		$this->plugin_path   = plugin_dir_path( __FILE__ );
 
-		global $wp_version;
-		if ( version_compare( $wp_version, '3.9', '>=' ) )
+		// intro in 3.9
+		if ( class_exists('WP_Customize_Widgets' ) )
 			$this->tinymce4 = true;
 
 		$this->init();
