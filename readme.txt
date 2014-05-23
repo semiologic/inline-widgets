@@ -53,6 +53,10 @@ The [Semiologic forum](http://forum.semiologic.com) is the best place to report 
 
 == Change Log ==
 
+= 2.3.2 =
+
+- TinyMCE 3 and 4 used different editor initialization settings.  Change to support both now when adding the inline widgets dropdown.
+
 = 2.3.1 =
 
 - Use more full proof WP version check to alter plugin behavior instead of relying on $wp_version constant.

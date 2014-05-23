@@ -232,19 +232,35 @@ document.inlineWidgetItems = inlineWidgetItems;
 
 	function editor_init($mceInit) {
 
-		$toolbar4 = explode( ',', $mceInit['toolbar4']);
-		if ( count ($toolbar4 ) <= 1) {
-			if ( $toolbar4[0] == 'inline_widgets') {
-				if ( !empty($mceInit['toolbar3'] )) {
-					$mceInit['toolbar3'] .= ',inline_widgets';
+		// tinymce4 settings
+		if ( isset($mceInit['toolbar4']) ) {
+			$toolbar4 = explode( ',', $mceInit['toolbar4']);
+			if ( count ($toolbar4 ) <= 1) {
+				if ( $toolbar4[0] == 'inline_widgets') {
+					if ( !empty($mceInit['toolbar3'] )) {
+						$mceInit['toolbar3'] .= ',inline_widgets';
+					}
+					else {
+						$mceInit['toolbar2'] .= ',inline_widgets';
+					}
+					$mceInit['toolbar4'] = '';
 				}
-				else {
-					$mceInit['toolbar2'] .= ',inline_widgets';
-				}
-				$mceInit['toolbar4'] = '';
 			}
 		}
-
+		else {   // tinyMCE 3 and before
+			$toolbar4 = explode( ',', $mceInit['theme_advanced_buttons4']);
+			if ( count ($toolbar4 ) <= 1) {
+				if ( $toolbar4[0] == 'inline_widgets') {
+					if ( !empty($mceInit['theme_advanced_buttons3'] )) {
+						$mceInit['theme_advanced_buttons3'] .= ',inline_widgets';
+					}
+					else {
+						$mceInit['theme_advanced_buttons2'] .= ',inline_widgets';
+					}
+					$mceInit['theme_advanced_buttons4'] = '';
+				}
+			}
+		}
 		return $mceInit;
 	} # editor_init()
 } # inline_widgets_admin
