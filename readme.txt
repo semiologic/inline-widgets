@@ -53,6 +53,10 @@ The [Semiologic forum](http://forum.semiologic.com) is the best place to report 
 
 == Change Log ==
 
+= 2.3.3 =
+
+- Broke WP 3.9/TinyMCE4 inline widgets in toolbar with 2.3.1 change.  Guess nobody noticed.
+
 = 2.3.2 =
 
 - TinyMCE 3 and 4 used different editor initialization settings.  Change to support both now when adding the inline widgets dropdown.

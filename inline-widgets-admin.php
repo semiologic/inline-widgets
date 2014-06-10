@@ -56,7 +56,7 @@ class inline_widgets_admin {
 		$this->plugin_path   = plugin_dir_path( __FILE__ );
 
 		// intro in 3.9
-		if ( class_exists('WP_Customize_Widgets' ) )
+		if ( function_exists('wp_normalize_path' ) )
 			$this->tinymce4 = true;
 
 		$this->init();
