@@ -53,6 +53,10 @@ The [Semiologic forum](http://forum.semiologic.com) is the best place to report 
 
 == Change Log ==
 
+= 2.4.1 =
+
+- Fix versioning issue with 2.3.2/2.3.3.   Inline widgets dropdown not showing on some sites.
+
 = 2.4 =
 
 - WP 4.0 Compat
