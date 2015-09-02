@@ -1,9 +1,9 @@
 === Inline Widgets ===
 Contributors: Denis-de-Bernardy & Mike_Koepke
-Donate link: http://www.semiologic.com/partners/
+Donate link: https://www.semiologic.com/donate/
 Tags: semiologic
 Requires at least: 2.8
-Tested up to: 4.0
+Tested up to: 4.3
 Stable tag: trunk
 
 Lets you insert any widget in the contents of your posts and pages.
@@ -52,6 +52,11 @@ The [Semiologic forum](http://forum.semiologic.com) is the best place to report 
 
 
 == Change Log ==
+
+= 2.5 =
+
+- WP 4.3 compat
+- Tested against PHP 5.6
 
 = 2.4.1 =
 
